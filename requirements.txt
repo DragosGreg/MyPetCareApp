@@ -1,0 +1,12 @@
+Flask
+Flask-Session
+requests
+flask-migrate
+flask-sqlalchemy
+python-dotenv
+requests
+Flask-Mail
+flask-wtf
+wtforms
+email-validator
+matplotlib

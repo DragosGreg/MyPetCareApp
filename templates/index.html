@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <div class="row">
+            {% for pet in g.pets %}
+            <!-- Pet card -->
+            <div class="col-md-6 mb-4">
+                <!-- Card container -->
+                <div class="card h-100 shadow p-3 d-flex align-items-center">
+                    <div class="row g-0 w-100 align-items-center">
+                        <!-- Photo -->
+                        <div class="pet_photo col-4 text-center">
+                        {% if pet.pet_profile_photo %}
+                            <img src="{{ url_for('static', filename='uploads/' + pet.pet_profile_photo.replace('\\', '/')) }}" alt="{{ pet.name }}" class="img-fluid pet_pfp shadow">
+                            
+                        {% else %}
+                            <img src="/static/images/default_pet_avatar.png" alt="default pet photo" class="img-fluid pet_pfp shadow">
+                        {% endif %}
+                        </div>
+                        <!-- Pet Info -->
+                        <div class="col-8">
+                            <!-- Name and menu-->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0 card_name text-center">{{ pet.name }}</h2>
+                                {% include 'pet_dropdown_menu.html' %}
+                            </div>
+                            <!-- Breed and Specie -->
+                            <div class="row mt-2 text-start">
+                                <div class="col">
+                                    <p class="mb-0"><strong>Breed:</strong> {{ pet.breed.name }}</p>
+                                </div>
+                                <div class="col">
+                                    <p class="mb-0"><strong>Specie:</strong> {{ pet.species.name }}</p>
+                                </div>
+                            </div>
+                            <!-- Age and Birthday -->
+                            <div class="row mt-2 text-start">
+                                {% if pet.birth_date is not none %}
+                                    <div class="col">
+                                        <p class="mb-0"><strong>Age:</strong> {{ pet.age() }} years</p>
+                                    </div>
+                                    <div class="col">
+                                        <p class="mb-0"><strong>Birthday in:</strong> {{ pet.days_to_birthday(pet.birth_date) }} days</p>
+                                    </div>
+                                {% else %}
+                                    <div class="col">
+                                        <p class="mb-0"><strong>Age:</strong> Unknown</p>
+                                    </div>
+                                    <div class="col">
+                                        <p class="mb-0"><strong>Birthday in:</strong> ? days</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <!-- Sex and Sterilized -->
+                            <div class="row mt-2 text-start">
+                                <div class="col">
+                                    <p class="mb-0"><strong>Sex:</strong> 
+                                        {% if pet.sex == 'M' %}
+                                            <i class="fa-solid fa-mars"></i>
+                                        {% elif pet.sex == 'F' %}
+                                            <i class="fa-solid fa-venus"></i>
+                                        {% else %}
+                                            <i class="fa-solid fa-circle-question"></i>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="col">
+                                    <p class="mb-0"><strong>Sterilized:</strong> 
+                                        {% if pet.sterilized %}
+                                            YES
+                                        {% else %}
+                                            NO
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end mt-2">
+                                <a href="{{ url_for('pet.edit_pet', pet_id=pet.id) }}" class="btn btn-success ms-2"><i class="fa-solid fa-pen-to-square"></i></a>
+                                <a href="#" class="btn btn-danger ms-2" onclick="confirmDelete(event, '{{ url_for('pet.delete_pet', pet_id=pet.id)}}')"><i class="fa-solid fa-trash-can"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if g.pets | length == 0%}
+        <div class="d-flex flex-column justify-content-center">
+            <img class="bg_img mb-4" src="/static/images/home_illustration.png" alt="Person with pets">
+            <h4 class="mb-4">It looks like you haven't added any pets yet.</h4>
+            <h4>Click the + button to add your first one!</h4>
+        </div>
+    {% endif %}
+    
+    <!-- Add new pet button -->
+    <a href="/new_pet" id="addPetBtn" class="dark_btn btn_plus d-flex align-items-center justify-content-center"><i class="fa-solid fa-plus fa-2x"></i></a>
+    {% include 'delete_confirmation_modal.html' %}
+
+{% endblock %}

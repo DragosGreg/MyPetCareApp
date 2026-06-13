@@ -1,0 +1,154 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ pet.name }}'s Info:
+{% endblock %}
+
+{% block main %}
+
+    <div class="container d-flex justify-content-center align-items-center">
+        <div class="text-start">
+            <h1 class="mb-4 text-center">{{ pet.name }}'s Info:</h1>
+            <div class="row mb-2">
+                <div class="text-center mb-4 col-10">
+                    {% if pet.pet_profile_photo %}
+                        <img class="img-fluid pet_pfp shadow" src="{{ url_for('static', filename='uploads/' + pet.pet_profile_photo.replace('\\', '/')) }}" alt="Pet Photo">
+                    {% else %}
+                        <img class="img-fluid pet_pfp shadow" src="/static/images/default_pet_avatar.png" alt="Pet Photo">
+                    {% endif %}
+                </div>
+                <div class="col-2">
+                    {% include 'pet_dropdown_menu.html' %}
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <h5>Name:</h5>
+                </div>
+                <div class="col">
+                    {{ pet.name }}
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <h5>Sex:</h5>
+                </div>
+                <div class="col">
+                    {{ pet.sex }}
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <h5>Specie:</h5>
+                </div>
+                <div class="col">
+                    {{ pet.species.name }}
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <h5>Breed:</h5>
+                </div>
+                <div class="col">
+                    {{ pet.breed.name }}
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <h5>Age:</h5>
+                </div>
+                <div class="col">
+                    {{ pet.age() }}
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <h5>Birth Date:</h5>
+                </div>
+                <div class="col">
+                    {{ pet.birth_date or "Unknown"}}
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <h5>Days to birthday:</h5>
+                </div>
+                {% if pet.birth_date %}
+                    <div class="col">
+                        {{ pet.days_to_birthday(pet.birth_date) }} days
+                    </div>
+                {% else %}
+                    <div class="col">
+                        -
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <h5>Adoption date:</h5>
+                </div>
+                <div class="col">
+                    {{ pet.adoption_date or "Unknown"}}
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <h5>Sterilized:</h5>
+                </div>
+                <div class="col">
+                    {% if pet.sterilized %}
+                        <p>YES</p>
+                    {% else %}
+                        <p>NO</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <h5>Microchip No.</h5>
+                </div>
+                <div class="col">
+                    {{ pet.microchip_number or "-" }}
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <h5>Insurance Company:</h5>
+                </div>
+                <div class="col">
+                    {{ pet.insurance_company or "-" }}
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <h5>Insurance No.</h5>
+                </div>
+                <div class="col">
+                    {{ pet.insurance_number or "-" }}
+                </div>
+            </div>
+            <div class="row mb-2 mt-4">
+                <div class="col">
+                    <a href="{{ url_for('pet.edit_pet', pet_id=pet.id) }}" class="btn btn-success ms-2"><i class="fa-solid fa-pen-to-square"></i></a>
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-danger ms-2" onclick="confirmDelete(event, '{{ url_for('pet.delete_pet', pet_id=pet.id)}}')"><i class="fa-solid fa-trash-can"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'delete_confirmation_modal.html' %}
+
+{% endblock %}

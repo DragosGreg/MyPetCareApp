@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Pet Care App {% block title %}{% endblock %}</title>
+
+        <link rel="icon" href="/static/images/favicon.svg" type="image/svg+xml"/>
+
+        <!-- Bootstrap CSS & JS bundle-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"/>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        
+        <!-- jquery CDN -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!-- Font families -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+        <!-- Font Awesome Icons -->
+        <script src="https://kit.fontawesome.com/246833f4ba.js" crossorigin="anonymous"></script>
+
+        <!-- My CSS -->
+        <link rel="stylesheet" href="/static/css/styles.css"/>
+    </head>
+    <body class="d-flex flex-column min-vh-100">
+        {% if session["user_id"] %}
+            <!-- Top Navbar -->
+            <nav id="top_navbar" class="navbar navbar-expand-md sticky-top shadow" data-bs-theme="dark">
+                <div class="container-fluid">
+                    <i class="fa-solid fa-shield-dog" style="font-size: 2.5rem; color: #FFF5F9;"></i>
+                    <h1 class="navbar_name">My Pet Care App</h1>
+
+                    <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbar">
+                            <ul class="navbar-nav ms-auto mt-2">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa-solid fa-paw fa-2x"></i>
+                                    </a>
+                                    <ul class="dropdown-menu animate-dropdown">
+                                        <li><a class="dropdown-item" href="/">All Pets</a></li>
+                                        {% for pet in g.pets %}
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" href="{{ url_for('pet.general_data', pet_id=pet.id) }}">{{ pet.name }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link" id="theme-toggle">
+                                        <i id="theme-icon" class="fa-solid fa-circle-half-stroke fa-2x"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa-solid fa-gear fa-2x"></i>
+                                    </a>
+                                    <ul class="dropdown-menu animate-dropdown">
+                                        <li><a class="dropdown-item" href="/restore_password">Change password</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="{{ url_for('auth.delete_user', user_id=session['user_id']) }}">Delete user</a></li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item"><a class="nav-link" href="/logout"><i class="fa-solid fa-right-from-bracket fa-2x"></i></a></li>
+                            </ul>          
+                    </div>
+                </div>
+            </nav>
+            {% endif %}
+
+            <header>
+                <!-- Custom Alert -->
+                <div id="customAlert" class="alert alert-danger alert-dismissible fade show text-center" role="alert" style="display:none;">
+                    <strong>Error!</strong> <span id="alertMessage"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>                
+                {% if get_flashed_messages() %}
+                    <div class="alert alert-primary alert-dismissible fade show mb-0 text-center" role="alert" id="flashedMessage">
+                        {{ get_flashed_messages() | join(" ") }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endif %}
+            </header>
+
+
+            <main class="container-fluid text-center">
+            {% block main %}{% endblock %}
+            </main>
+        </div>
+        <footer class="text-center mt-auto">
+            <p>Copyright © <span id="current_year"></span> DG. All rights reserved.</p>
+        </footer>
+        
+        <script src="/static/js/scripts.js"></script>
+    </body>
+</html>

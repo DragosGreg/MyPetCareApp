@@ -1,0 +1,30 @@
+﻿{% extends "layout.html" %}
+
+{% block title %}
+    Welcome
+{% endblock %}
+
+{% block main %}
+
+    <div class="container-fluid welcome_page">
+        <div>
+            <i class="fa-solid fa-shield-dog" style="font-size: 15rem; color: #F06292;"></i>
+            <h1>Welcome to My Pet Care App</h1>
+        </div>
+        <div class="vertical_padding">
+            <p>
+                Track your pet's health, manage care records and store memories, all in one place.
+            </p>
+        </div>
+        <div>
+            <div class="mb-3 btn dark_btn">
+                <a href="/login">I have an Account</a>
+            </div>
+            <br>
+            <div class="mb-3 btn dark_btn">
+                <a href="/register">Create an Account</a>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}

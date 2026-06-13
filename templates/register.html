@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block main %}
+<div class="row justify-content-center">
+    <div class="col-md-4 col-sm-8">
+        <div class="card p-4 text-start">
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-shield-dog" style="font-size: 3rem; color: #F06292;"></i>
+                <h1 class="mt-2">Sign Up</h1>
+            </div>
+
+            <form id="registrationForm" action="{{ url_for('auth.register') }}" method="post">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" for="username">Username</label>
+                    {{ form.username(class="form-control", placeholder="Choose a username") }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" for="email">Email</label>
+                    {{ form.email(class="form-control", placeholder="Enter your email") }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" for="password">Password</label>
+                    {{ form.password(class="form-control", placeholder="Create a password") }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" for="confirmation">Confirm Password</label>
+                    {{ form.confirmation(class="form-control", placeholder="Repeat your password") }}
+                </div>
+                <div class="d-grid mt-4">
+                    <button class="btn dark_btn" type="submit">Create Account</button>
+                </div>
+            </form>
+
+            <div class="text-center mt-3">
+                <a href="/login">Already have an account?</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#registrationForm').on('submit', function(event) {
+            var password = $('input[name="password"]').val();
+            var confirmation = $('input[name="confirmation"]').val();
+            if (password !== confirmation) {
+                event.preventDefault();
+                showAlert("Passwords do not match. Please try again.");
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block title %}New Photo{% endblock %}
+
+{% block main %}
+<div class="row justify-content-center">
+    <div class="col-md-5 col-sm-8">
+        <div class="card p-4 text-start">
+            <h2 class="text-center mb-4">Upload a New Photo</h2>
+
+            <form action="{{ url_for('gallery.upload_photo', pet_id=pet.id) }}" method="post" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Photo</label>
+                    {{ form.image(id="new_photo", accept="image/*", class="form-control") }}
+                </div>
+
+                <div id="preview-container" class="mb-3 text-center" style="display: none;">
+                    <img id="image-preview" src="" alt="Preview" class="img-fluid shadow gallery_img">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Title <span class="text-muted fw-normal">(optional)</span></label>
+                    {{ form.title(autocomplete="off", class="form-control", autofocus=True, placeholder="Photo title") }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Date</label>
+                    {{ form.date_uploaded(autocomplete="off", class="form-control") }}
+                </div>
+
+                <div class="d-flex justify-content-between mt-3">
+                    <button onclick="window.location.href='/'" class="btn btn-secondary">Cancel</button>
+                    {{ form.submit(class="btn dark_btn") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const inputPhoto = document.getElementById('new_photo');
+        const previewContainer = document.getElementById('preview-container');
+        const imagePreview = document.getElementById('image-preview');
+        const validExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        const MAX_FILE_SIZE_MB = 5;
+
+        inputPhoto.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+                    alert("The file is too large. Maximum size is " + MAX_FILE_SIZE_MB + " MB.");
+                    inputPhoto.value = "";
+                    return;
+                }
+                if (!file.type.startsWith('image/')) {
+                    alert("Please upload a valid image file (jpeg, jpg, png, gif).");
+                    inputPhoto.value = "";
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imagePreview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+</script>
+{% endblock %}

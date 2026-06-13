@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Pet Trackers
+{% endblock %}
+
+{% block main %}
+
+    <div class="mb-4">
+        <h2 class="d-inline-block">{{ pet.name }}'s Trackers</h2>
+        {% include 'pet_dropdown_menu.html' %}
+    </div>
+
+    <!-- Tabs for Trackers -->
+    <ul class="nav nav-pills mb-3" id="tracker-tabs" role="tablist">
+        {% for tracker in trackers %}
+        <li class="nav-item" role="presentation">
+            <a class="nav-link {% if loop.index == 1 %}active{% endif %}" id="tab-{{ tracker.name|replace(' ', '-') }}" data-bs-toggle="pill" href="#{{ tracker.name|replace(' ', '-') }}" role="tab" aria-controls="{{ tracker.name|replace(' ', '-') }}" aria-selected="true">
+                <i class="fa-solid {% if tracker.name == 'Weight Tracker' %}fa-weight-scale{% elif tracker.name == 'Vaccination Tracker' %}fa-syringe{% elif tracker.name == 'Internal Deworming' %}fa-pills{% elif tracker.name == 'External Deworming' %}fa-spray-can-sparkles{% else %}fa-prescription-bottle-medical{% endif %}"></i>
+                {{ tracker.name }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <div class="tab-content" id="tracker-tabs-content">
+        {% for tracker in trackers %}
+        <div class="tab-pane fade {% if loop.index == 1 %}show active{% endif %}" id="{{ tracker.name|replace(' ', '-') }}" role="tabpanel" aria-labelledby="tab-{{ tracker.name|replace(' ', '-') }}">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ tracker.name }}</h5>
+                    <p class="card-text">{{ tracker.description }}</p>
+
+                    <!-- Add New Entry Button -->
+                    <a href="{{ url_for('trackers.add_tracker', tracker_type=tracker.type, pet_id=pet.id) }}" class="btn btn-success">Add New Entry</a>
+
+                    {% if tracker.name == 'Weight Tracker' %}
+                    <!-- Weight Graph Button -->
+                    <a href="{{ url_for('trackers.weight_graph', pet_id=pet.id) }}" class="btn btn-info">View Weight Graph</a>
+                    {% endif %}
+
+                    <!-- Show Latest Entries -->
+                    <table class="table mt-4">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                {% if tracker.type == 'weight' %}
+                                    <th>Weight(kg)</th>
+                                {% elif tracker.type == 'vaccine' %}
+                                    <th>Product name</th>
+                                    <th>Administered by</th>
+                                {% else %}
+                                    <th>Product name</th>
+                                    <th>Next Dosis</th>
+                                {% endif %}
+                                <th>Notes</th>
+                                <th>Delete data</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in tracker.entries %}
+                            <tr>
+                                <td>{{ entry.date }}</td>
+                                {% if tracker.type == 'weight' %}
+                                    <td>{{ entry.weight_in_kg }} kg</td>
+                                {% elif tracker.type == 'vaccine' %}
+                                    <td>{{ entry.vaccine_name }}</td>
+                                    <td>{{ entry.administered_by }}</td>
+                                {% else %}
+                                    <td>{{ entry.product_name }}</td>
+                                    <td>{{ entry.next_dosis or "-"}}</td>
+                                {% endif %}
+                                <td>{{ entry.notes or "-"}}</td>
+                                <td><a 
+                                    href="#"
+                                    class="btn btn-danger ms-2"
+                                    onclick="confirmDelete(event, '{{ url_for('trackers.delete', tracker_type=tracker.type, entry_id=entry.id)}}')">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% include 'delete_confirmation_modal.html' %}
+
+{% endblock %}

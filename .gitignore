@@ -1,0 +1,55 @@
+# Environment variables (credentials - never commit)
+.env
+*.env
+
+# Virtual environments
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Database
+instance/
+*.db
+*.sqlite3
+
+# Flask session files
+flask_session/
+
+# User uploaded photos
+static/uploads/
+
+# Logs
+logs/
+*.log
+
+# Cache
+.cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Build artifacts
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Temporary files
+*.bak
+*.swp
+*.tmp
+.coverage
+
+# PID
+*.pid

@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Gallery
+{% endblock %}
+
+{% block main %}
+
+    <div class="mb-4">
+        <h2 class="d-inline-block">{{ pet.name }}'s Gallery</h2>
+        {% include 'pet_dropdown_menu.html' %}
+    </div>
+
+    {% if photos %}
+        <div class="photo-gallery row">
+            {% for photo in photos %}
+            <div class="card col-md-3 col-sm-6 photo-card" data-photo-url="{{ url_for('static', filename='uploads/' + photo.image_url.replace('\\', '/')) }}">
+                <img src="{{ url_for('static', filename='uploads/' + photo.image_url.replace('\\', '/')) }}" alt="Photo of {{ pet.name or 'pet' }}" class="img-fluid gallery_img"/>
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ photo.title or 'Untitled' }}</h5>
+                    <h6 class="card-subtitle mb-2 text-body-secondary">Date: {{ photo.date_uploaded }}</h6>
+                    <div class="d-flex justify-content-end mt-2">
+                        <a href="#" class="btn btn-danger ms-2" onclick="confirmDelete(event, '{{ url_for('gallery.delete_photo', photo_id=photo.id)}}')"><i class="fa-solid fa-trash-can"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="d-flex flex-column justify-content-center text-center">
+            <img class="bg_img mb-4" src="/static/images/gallery_illustration.png" alt="Person photographing pet">
+            <h4 class="mb-4">It looks like you haven't added any photos yet.</h4>
+            <h4>Click the + button to add your first one!</h4>
+        </div>
+    {% endif %}
+    
+    <!-- Add new photo button -->
+    <a href="{{ url_for('gallery.upload_photo', pet_id=pet.id) }}" id="addPetBtn" class="dark_btn btn_plus d-flex align-items-center justify-content-center"><i class="fa-solid fa-plus fa-2x"></i></a> 
+
+
+    <!-- Modal for Fullscreen Photo View -->
+    <div class="modal fade" id="photoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-transparent border-0">
+                <div class="modal-body d-flex justify-content-center align-items-center">
+                    <img id="modalImage" src="" class="img-fluid" alt="Full photo preview">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% include 'delete_confirmation_modal.html' %}    
+
+    <script>
+        // Show bigger photo
+        document.addEventListener('DOMContentLoaded', function() {
+            const photoCards = document.querySelectorAll('.photo-card');
+            const modalImage = document.getElementById('modalImage');
+            const photoModal = new bootstrap.Modal(document.getElementById('photoModal'));
+            
+            photoCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const photoUrl = card.getAttribute('data-photo-url');
+                    modalImage.src = photoUrl;
+                    photoModal.show();
+                });
+            });
+        });
+    </script>
+{% endblock %}
