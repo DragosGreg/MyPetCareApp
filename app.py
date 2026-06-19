@@ -7,9 +7,11 @@ Model adapted from:
 https://flask.palletsprojects.com/en/latest/patterns/appfactories/
 """
 
+import os
+
 from app_factory import init_app
 
 app = init_app()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)), debug=os.getenv("FLASK_DEBUG") == "1")
